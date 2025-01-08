@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file
+from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
 import os
@@ -18,6 +18,9 @@ def index(path):
     else:
         return abort(404)
 
+@app.route('/classgap')
+def contact_page():
+    return render_template('classgap.html')
 
 @app.route('/resume')
 def get_resume():
@@ -53,4 +56,4 @@ def serve_game_static(path):
     return send_from_directory('game', path)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
