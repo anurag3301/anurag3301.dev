@@ -2,3 +2,5 @@
 venv
 __pycache__
 game
+.env
+files.db
