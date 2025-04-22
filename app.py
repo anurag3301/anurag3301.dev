@@ -128,8 +128,23 @@ def upload_file():
 def get_file(hashed_name):
     file_path = os.path.join(UPLOAD_DIR, hashed_name)
     if not os.path.isfile(file_path):
-        return jsonify({"error": "File not found"}), 404
-    return send_from_directory(UPLOAD_DIR, hashed_name)
+        return "File not found", 404
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT original_name FROM files WHERE hashed_name = ?", (hashed_name,))
+        row = c.fetchone()
+        if not row:
+            return "File not found in database", 404
+        original_name = row[0]
+
+    return send_from_directory(
+        UPLOAD_DIR,
+        hashed_name,
+        as_attachment=True,
+        download_name=original_name
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
