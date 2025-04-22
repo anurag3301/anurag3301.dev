@@ -14,6 +14,7 @@ UPLOAD_KEY = os.getenv("UPLOAD_KEY")
 
 UPLOAD_DIR = f"{os.getenv('HOME')}/uploads"
 DB_PATH = "files.db"
+SERVER_ADDR = "https://anurag3301.com"
 
 app = Flask(__name__)
 CORS(app)
@@ -121,7 +122,7 @@ def upload_file():
                      (original_name, hashed_name))
         conn.commit()
 
-    return f"/files/{hashed_name}", 200
+    return f"{SERVER_ADDR}/files/{hashed_name}\n", 200
 
 @app.route("/files/<path:hashed_name>", methods=["GET"])
 def get_file(hashed_name):
