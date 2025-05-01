@@ -11,6 +11,8 @@ tags = ["nvim", "platformio"]
 
 If you work with microcontrollers you must have heard of `PlatformIO`. It is a tool which we can use to program and debug multiple families of microcontrollers in various frameworks with little to no manual setup work. PlatformIO takes care of installing the tool, setting up the project, build, upload and debug. PlatformIO comes with an extension for VS Code which wraps the underlaying `PlatformIO cli` tool and exposes a very nice interface to setup project and use other tools. But if you are a n/vim user like me, you only have the cli. I was fine with cli but I wanted that ease of use like VS Code extension so I made this neovim plugin called [nvim-platformio.lua](https://github.com/anurag3301/nvim-platformio.lua)
 
+<!-- more -->
+
 # Installation process
 
 1. Install the PlatformIO core

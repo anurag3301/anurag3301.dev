@@ -10,6 +10,8 @@ tags = ["atmega32", "avr"]
 
 Hey, you must be fimilier with the classic Arduino Uno. This was my first ever microcontroller board and frankly the most used one too, I loved it. But first what is Arduino software stack, Arduino is a abstraction layer on top of the baremetal AVR utilities. This abstraction layer makes things so easy that even a highscool kid can learn microcontroller programming and make stuff out of it. This comes at a cost, you are restricted with the arduino framework, design pattern, the arduino IDE. To make things easy, arduino framework hides lot of features and configuration is provided in the MCU. If you want to be a good embedded engineer you cant stay with Arduino framework forever.
 
+<!-- more -->
+
 So now its time to level up. Lets understand how can we program our arduino board without the arduino software framework:
 1. Writing raw C code with standered `int main()` function and compile ourself with the `avr-gcc` compiler.
 2. Operating the peripherals by manupulating registers with bitwise operations.
