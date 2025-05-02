@@ -73,6 +73,10 @@
                 {%- set show_pages = section.pages -%}
             {% endif -%}
 
+            {% set sorted_pages = show_pages | sort(attribute="date") %}
+            {% set reversed_pages = sorted_pages | reverse %}
+            {% set show_pages = reversed_pages %}
+
             {%- for page in show_pages %}
                 <div class="post on-list">
                     {{ post_macros::header(page=page) }}
