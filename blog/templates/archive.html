@@ -9,7 +9,8 @@
         <h1 class="post-title">{{ page.title }}</h1>
 
         {% set section = get_section(path="_index.md") %}
-
-        {{ post_macros::list_posts(pages=section.pages) }}
+        {% set sorted_pages = section.pages | sort(attribute="date") %}
+        {% set reversed_pages = sorted_pages | reverse %}
+        {{ post_macros::list_posts(pages=reversed_pages ) }}
     </div>
 {% endblock content %}
