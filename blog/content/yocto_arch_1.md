@@ -29,12 +29,12 @@ cd ~/yocto
 qemu-img create -f qcow2 ubuntu-disk.qcow2 20G
 
 # Boot QEMU with ubuntu-server iso and disk image on which we'll install it
-# Set the processor core count and memory according to your pc, I have kep 6 core and 16GB memory
+# Set the processor core count and memory according to your pc, I have kept 10 core and 16GB memory
 # Set the path for your ubuntu-server.iso
 qemu-system-x86_64 \
     -enable-kvm \
-    -m 16000 \
-    -smp 6 \
+    -m 16G \
+    -smp 10 \
     -cdrom Path/to/ubuntu-server.iso \
     -hda ubuntu-disk.qcow2 \
     -boot d \
@@ -46,8 +46,8 @@ qemu-system-x86_64 \
 Here is explaination for each argument
 - **`qemu-system-x86_64`**: Runs the QEMU emulator for 64-bit x86 systems.  
 - **`-enable-kvm`**: Enables hardware acceleration via KVM for better performance.  
-- **`-m 16000`**: Allocates 16 GB (16000 MB) of RAM to the virtual machine.  
-- **`-smp 6`**: Assigns 6 CPU cores to the virtual machine.  
+- **`-m 16G`**: Allocates 16 GB of RAM to the virtual machine.  
+- **`-smp 10`**: Assigns 10 CPU cores to the virtual machine.  
 - **`-cdrom ~/Downloads/ubuntu-24.04.2-live-server-amd64.iso`**: Sets the Ubuntu ISO as the virtual CD-ROM.  
 - **`-hda ubuntu-disk.qcow2`**: Uses `ubuntu-disk.qcow2` as the VM's primary hard disk.  
 - **`-boot d`**: Boots from the CD-ROM (`d` = CD drive) first.  
@@ -63,8 +63,8 @@ At this point you should have ubuntu installed on your disk image and you can bo
 ```sh
 qemu-system-x86_64 \
     -enable-kvm \
-    -m 16000 \
-    -smp 6 \
+    -m 16G \
+    -smp 10 \
     -hda ubuntu-disk.qcow2 \
     -net nic \
     -net user \
@@ -93,7 +93,7 @@ shutdown now
 
 qemu-system-x86_64 \
     -enable-kvm \
-    -m 20000 \
+    -m 16G \
     -smp 10 \
     -hda ubuntu-disk.qcow2 \
     -vga virtio \
