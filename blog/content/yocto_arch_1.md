@@ -6,6 +6,8 @@ date = 2025-03-25
 tags = ["yocto", "linux", "beaglebone"]
 +++
 
+{{ youtube(id="-YcWtBhIcG0", class="youtube") }}
+
 I am starting a new series of Yocto development for Beaglebone Black. If you don't know about yocto, this is how The Yocto Project themselves introduce.
 > The Yocto Project (YP) is an open source collaboration project that helps developers create custom Linux-based systems regardless of the hardware architecture.
 
