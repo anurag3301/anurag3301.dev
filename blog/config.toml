@@ -28,6 +28,6 @@ menu_items = [
 enable_post_view_navigation = true
 post_view_navigation_prompt = "Thanks for reading! Read other posts?"
 use_full_hack_font = true
-favicon = "img/favicon.png"
+favicon = "/img/favicon.png"
 favicon_mimetype = "image/png"
 page_titles = "main_only"
