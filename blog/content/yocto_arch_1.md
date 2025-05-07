@@ -1,6 +1,6 @@
 +++
 title = "Yocto setup on Arch linux Pt 1"
-date = 2025-03-25
+date = 2025-05-02
 
 [taxonomies]
 tags = ["yocto", "linux", "beaglebone"]
