@@ -23,7 +23,7 @@ menu_items = [
     {name = "archive", url = "$BASE_URL/archive"},
     {name = "GitHub", url = "https://github.com/anurag3301", newtab = true},
     {name = "LinkedIn", url = "https://www.linkedin.com/in/anurag3301/", newtab = true},
-    {name = "Class Gap", url = "https://www.classgap.com/me/anurag-kumar-singh", newtab = true},
+    {name = "Class Gap", url = "https://www.classgap.com/en/tutor/anurag-kumar-singh", newtab = true},
 ]
 enable_post_view_navigation = true
 post_view_navigation_prompt = "Thanks for reading! Read other posts?"
