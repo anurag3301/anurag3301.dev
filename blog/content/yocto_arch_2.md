@@ -141,3 +141,101 @@ Now you may wanna go do something else as this will take from 2-4 hours based on
 If your build failed, just rerun the bitbake build.
 
 ## Build Finish
+Now that your build is finised, it should look like this with a success message
+```
+Loading cache: 100% |##############################################################################| Time: 0:00:01
+Loaded 1879 entries from dependency cache.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.8.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "aarch64-poky-linux"
+MACHINE              = "qemuarm64"
+DISTRO               = "poky"
+DISTRO_VERSION       = "5.0.9"
+TUNE_FEATURES        = "aarch64 crc cortexa57"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "scarthgap:9c63e0c9646c61663e8cfc6b4c75865cd0cd3b34"
+
+Sstate summary: Wanted 0 Local 0 Mirrors 0 Missed 0 Current 1849 (0% match, 100% complete)#        | ETA:  0:00:00
+Initialising tasks: 100% |#########################################################################| Time: 0:00:06
+NOTE: Executing Tasks
+NOTE: Tasks Summary: Attempted 4059 tasks of which 4059 didn't need to be rerun and all succeeded.
+```
+
+Now lets lets your yocto, switch back to your host pc.
+```sh
+# [HOST] cd inside the poky directory
+cd ~/yocto/poky
+
+# [HOST] source yocto, this will give access to runqemu command
+source oe-init-build-env
+
+# Run qemu with the fresh yocto created linux distribution, this will ask for sudo password
+runqemu qemuarm64
+```
+And now a new qemu screen should appear with poky distribution.
+
+{{image(src="/img/poky1.png", position="center")}}
+
+Enter **root** as login username, there is no password, it should give you shell directly. To close give sigint in the terminal (Ctrl+c).
+
+> Congratulations 🎉🎉, You just made linux destroution from scratch and run it under qemu.
+
+# Simplification
+Now its time to reduce the manual work.
+
+1. Virtiofs daemon + Ubuntu VM Qemu, Create a file `startvm.sh` in ~/yocto and enter following in it
+```sh
+#!/bin/bash
+
+# **** REPLACE FOLLOWING WITH YOUR VRIOFSD COMMAD *******
+sudo /usr/lib/virtiofsd \
+  --inode-file-handles=mandatory \
+  --socket-path=/tmp/vm-share.sock \
+  --shared-dir="$HOME/yocto"
+&
+
+sudo qemu-system-x86_64 \
+    -enable-kvm \                 
+    -m 16G \                        
+    -smp 10 \                
+    -hda ubuntu-disk.qcow2 \
+    -vga virtio \
+    -display default \
+    -netdev user,id=net0,hostfwd=tcp::2222-:22 \
+    -device e1000,netdev=net0 \
+    -object memory-backend-memfd,id=mem,size=16G,share=on \
+    -numa node,memdev=mem \
+    -chardev socket,id=char0,path=/tmp/vm-share.sock \
+    -device vhost-user-fs-pci,chardev=char0,tag=myfs
+```
+Now make the script executable, make sure you close the ubuntu vm. 
+```sh
+# Change permission to make the script executable
+chmod +x startvm.sh
+
+# Now from now on just need to run following to start the vm
+./startvm.sh
+```
+ 
+2. Automount myfs in vm.
+```sh
+# in your vm edit file /etc/fstab
+sudo vim /etc/fstab
+
+# Add following line in the file, update the username in path
+myfs	/home/anurag/yocto	virtiofs	defaults	0	0
+
+# now we can test it by running following
+sudo mount -a
+
+# this should mount virtiofs, you can confirm by listing ~/yocto
+ls ~/yocto
+```
+
+<h3>Now you are all set to start working on yocto</h3>
