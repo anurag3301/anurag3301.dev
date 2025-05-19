@@ -7,7 +7,7 @@ tags = ["yocto", "linux", "beaglebone"]
 +++
 
 ## Yocto Setup
-Finally, after all this setup, we can go for yocto build. But sadly there one another problem we need to fix. If you use this setup and try to run yocto, in just few moments your build will start to fail all stating one error: `Too many files open`. This is a kind of error you may have never seen on you computer. There is a limit on how many files a process can open at any given moment of time which is usually 1024 open file descriptors, you can check that by running `ulimit -n`.  But you might be thinking why are we hitting the limit, if you build yocto on a native ubuntu os, you will not hit this limit, but why on the VM. **Reason Vritiofs**. 
+Finally, after all this setup, we can go for yocto build. But sadly there one another problem we need to fix. If you use this setup and try to build yocto, in just few moments your build will start to fail all stating one error: `Too many files open`. This is a kind of error you may have never seen on your computer. There is a limit on how many files a process can open at any given moment of time which is usually 1024 open file descriptors, you can check that by running `ulimit -n`.  But you might be thinking why are we hitting the limit, if you build yocto on a native ubuntu os, you will not hit this limit, but why on the VM. **Reason Vritiofs**. 
 
 ## Why does this happen?
 
@@ -67,7 +67,7 @@ sudo qemu-system-x86_64 \
     -device vhost-user-fs-pci,chardev=char0,tag=myfs
 ```
 
-And thats about it. Now you can ssh into the VM and mount the directory as you did in previously.
+And thats about it. Now you can ssh into the VM and mount the directory as you did previously.
 ```sh
 # SSH from host
 ssh vmUsername@localhost -p 2222
@@ -78,14 +78,14 @@ sudo mount -t virtiofs myfs yocto
 
 ## Yocto Build
 
-Now we are good to bulild yocto with no prblem. I recommend having two tabs on your terminal, tab1 for host system where you'll edit files and one tab2 which is sshed into VM for building
+Now we are good to build yocto with no problem. I recommend having two tabs on your terminal, first `tab1` for host system where you'll edit files and second `tab2` which is sshed into VM for building
 ```sh
 #[VM] Get inside VM and install packages needed for building yocto
 sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip python3-subunit socat texinfo unzip wget xz-utils zstd
 
 #[VM] clone poky
-cd yocto
-git clone git://git.yoctoproject.org/poky -b styhead
+cd ~/yocto
+git clone git://git.yoctoproject.org/poky -b scarthgap
 cd poky
 source oe-init-build-env
 ```
@@ -101,6 +101,7 @@ nvim ~/yocto/poky/build/conf/local.conf
 
 Now finally on your VM time to build the image
 ```sh
+#[VM]
 cd ~/yocto/poky
 source oe-init-build-env
 bitbake core-image-minimal -k
@@ -109,18 +110,18 @@ bitbake core-image-minimal -k
 After some load you must see the build configuration like follows and the build should start
 ```
 Build Configuration:
-BB_VERSION           = "2.9.1"
+BB_VERSION           = "2.8.0"
 BUILD_SYS            = "x86_64-linux"
 NATIVELSBSTRING      = "universal"
 TARGET_SYS           = "aarch64-poky-linux"
 MACHINE              = "qemuarm64"
 DISTRO               = "poky"
-DISTRO_VERSION       = "5.1.3"
+DISTRO_VERSION       = "5.0.9"
 TUNE_FEATURES        = "aarch64 crc cortexa57"
 TARGET_FPU           = ""
 meta                 
 meta-poky            
-meta-yocto-bsp       = "my-styhead:11a8dec6e29ac0b2fd942c0fc00dd7fc30658841"
+meta-yocto-bsp       = "scarthgap:9c63e0c9646c61663e8cfc6b4c75865cd0cd3b34"
 ```
 **Note:** You may see following error when build starts, its happening in ubuntu24
 ```
@@ -143,10 +144,6 @@ If your build failed, just rerun the bitbake build.
 ## Build Finish
 Now that your build is finised, it should look like this with a success message
 ```
-Loading cache: 100% |##############################################################################| Time: 0:00:01
-Loaded 1879 entries from dependency cache.
-NOTE: Resolving any missing task queue dependencies
-
 Build Configuration:
 BB_VERSION           = "2.8.0"
 BUILD_SYS            = "x86_64-linux"
@@ -193,12 +190,11 @@ Now its time to reduce the manual work.
 ```sh
 #!/bin/bash
 
-# **** REPLACE FOLLOWING WITH YOUR VRIOFSD COMMAD *******
+# **** REPLACE FOLLOWING WITH YOUR VRIOFSD COMMAND AND ADD & *******
 sudo /usr/lib/virtiofsd \
   --inode-file-handles=mandatory \
   --socket-path=/tmp/vm-share.sock \
-  --shared-dir="$HOME/yocto"
-&
+  --shared-dir="$HOME/yocto" &
 
 sudo qemu-system-x86_64 \
     -enable-kvm \                 
