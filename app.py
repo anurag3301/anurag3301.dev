@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request
+from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request, render_template_string
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
+from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
@@ -18,6 +19,8 @@ SERVER_ADDR = "https://anurag3301.com"
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
+
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
@@ -145,6 +148,37 @@ def get_file(hashed_name):
         download_name=original_name
     )
 
+
+
+html = """
+<!doctype html>
+<html>
+  <head>
+    <title>LED Color Picker</title>
+  </head>
+  <body>
+    <h1>Pick a color:</h1>
+    <input type="color" id="colorPicker" value="#ffffff">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const picker = document.getElementById('colorPicker');
+      picker.addEventListener('input', () => {
+        socket.emit('color_change', picker.value);
+      });
+    </script>
+  </body>
+</html>
+"""
+
+@app.route("/led")
+def led():
+    return render_template_string(html)
+
+@socketio.on('color_change')
+def handle_color_change(hex_color):
+    print("Sending color:", hex_color)
+    emit('set_color', hex_color, broadcast=True)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
