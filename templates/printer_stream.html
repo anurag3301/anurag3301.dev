@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Camera Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .video-container {
+            background-color: #000;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .status {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 Live Camera Stream</h1>
+        <div class="video-container">
+            <img src="/video_feed" alt="Live Stream">
+        </div>
+        <div class="status">
+            <p>Stream Status: <span id="status">Loading...</span></p>
+            <p>Resolution: 640x480 | Format: JPEG</p>
+        </div>
+    </div>
+    
+    <script>
+        // Simple status checker
+        const img = document.querySelector('img');
+        const status = document.getElementById('status');
+        
+        img.onload = function() {
+            status.textContent = 'Connected ✅';
+            status.style.color = 'green';
+        };
+        
+        img.onerror = function() {
+            status.textContent = 'Disconnected ❌';
+            status.style.color = 'red';
+        };
+    </script>
+</body>
+</html>

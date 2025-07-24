@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request, render_template_string
+from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request, render_template_string, Response
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
@@ -9,6 +9,7 @@ import hashlib
 import sqlite3
 import string
 import random
+from printerstream import *
 
 load_dotenv()
 UPLOAD_KEY = os.getenv("UPLOAD_KEY")
@@ -20,6 +21,7 @@ SERVER_ADDR = "https://anurag3301.com"
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+video_receiver = UDPVideoReceiver()
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 def init_db():
@@ -179,6 +181,31 @@ def led():
 def handle_color_change(hex_color):
     print("Sending color:", hex_color)
     emit('set_color', hex_color, broadcast=True)
+
+
+def generate_frames():
+    try:
+        while True:
+            frame = video_receiver.get_frame()
+            if frame is not None:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            else:
+                time.sleep(0.01)
+    except GeneratorExit:
+        video_receiver.stop()
+
+@app.route('/printer')
+def printer():
+    return render_template('printer_stream.html')
+
+@app.route('/video_feed')
+def video_feed():
+    if video_receiver.running:
+        video_receiver.stop()
+    video_receiver.start()
+    return Response(generate_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
