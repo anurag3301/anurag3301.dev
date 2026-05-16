@@ -1,12 +1,29 @@
-<link rel="icon" type="image/png" href="
+<link rel="icon" type="image/png" sizes="32x32" href="
 {%- if page.extra.favicon -%}
-	{{ get_url(path=page.colocated_path ~ page.extra.favicon) }}
+    {{ get_url(path=page.colocated_path ~ page.extra.favicon) }}
 {%- elif section.extra.favicon -%}
-	{{ get_url(path=section.colocated_path ~ section.extra.favicon) }}
+    {{ get_url(path=section.colocated_path ~ section.extra.favicon) }}
 {%- else -%}
     {{ get_url(path='favicon.png') }}
 {%- endif -%}" />
 
+<link rel="shortcut icon" type="image/x-icon" href="
+{%- if page.extra.favicon_ico -%}
+    {{ get_url(path=page.colocated_path ~ page.extra.favicon_ico) }}
+{%- elif section.extra.favicon_ico -%}
+    {{ get_url(path=section.colocated_path ~ section.extra.favicon_ico) }}
+{%- else -%}
+    {{ get_url(path='favicon.ico') }}
+{%- endif -%}" />
+
+<link rel="apple-touch-icon" href="
+{%- if page.extra.favicon -%}
+    {{ get_url(path=page.colocated_path ~ page.extra.favicon) }}
+{%- elif section.extra.favicon -%}
+    {{ get_url(path=section.colocated_path ~ section.extra.favicon) }}
+{%- else -%}
+    {{ get_url(path='favicon.png') }}
+{%- endif -%}" />
 
 {%- if page.extra.emoji_favicon or section.extra.emoji_favicon or config.extra.emoji_favicon %}
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='-.07em' y='.89em' font-size='90'%3E
