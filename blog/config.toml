@@ -16,7 +16,7 @@ accent_color = "green"
 background_color = "pink"
 
 logo_text = "anurag3301"
-logo_home_link = "http://anurag3301.com"
+logo_home_link = "https://anurag3301.dev"
 author = "anurag3301"
 menu_items = [
     {name = "blog", url = "$BASE_URL"},

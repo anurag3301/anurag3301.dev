@@ -33,7 +33,22 @@
 
 <body class="">
 
-<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="anurag3301" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF813F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('anurag3301', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': '',
+    'floating-chat.donateButton.background-color': '#323842',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+<style>
+    .floatingchat-container-wrap { left: unset; right: 50px; width: 50%; }
+    .floatingchat-container-wrap-mobi { left: unset; right: 50px; width: 50%;}
+    .floating-chat-kofi-popup-iframe { left: unset; right: 50px; }
+    .floating-chat-kofi-popup-iframe-mobi { left: unset; right: 50px; }
+    .floating-chat-kofi-popup-iframe-closer-mobi { left: unset; right: 50px; }
+</style>
 
 <div class="container">
     {% block header %}
