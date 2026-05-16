@@ -57,7 +57,7 @@ def contact_page():
 @app.route('/resume')
 def get_resume():
     # Path to the PDF file
-    pdf_path = os.path.join(app.root_path, 'static', 'Resume.pdf')
+    pdf_path = os.path.join(app.root_path, 'static', 'anurag_resume.pdf')
 
     try:
         return send_file(pdf_path, mimetype='application/pdf')
