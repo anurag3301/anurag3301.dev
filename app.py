@@ -16,7 +16,7 @@ UPLOAD_KEY = os.getenv("UPLOAD_KEY")
 
 UPLOAD_DIR = f"{os.getenv('HOME')}/uploads"
 DB_PATH = "files.db"
-SERVER_ADDR = "https://anurag3301.com"
+SERVER_ADDR = "https://anurag3301.dev"
 
 app = Flask(__name__)
 CORS(app)
