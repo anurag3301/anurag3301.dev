@@ -8,7 +8,11 @@ tags = ["yocto", "linux", "beaglebone"]
 
 In part 1 we setup the build environment for yocto build. In this part we actually setup yocto and do our basic build. Before we do there is a small update. When I was trying to build yocto I was hitting an error `OSError: [Errno 23] Too many open files in system` after 3-5 minutes after starting the build. Aparently `virtiofs` daemon keeps the file descriptor open on host system even after the VM has closed it. I had a discussion about this on a gitlab issue you can checkout [here](https://gitlab.com/virtio-fs/virtiofsd/-/work_items/202). TLDR is to use `--inode-file-handles=mandatory`
 
+
 > WARNING: this flag needs to be run as `sudo` so the `qemu` command also needs to be run as `sudo` else you get error `Failed to connect to '/tmp/vm-share.sock': Permission denied`
+
+
+<!-- more -->
 
 So new `virtiofsd` commands would be following
 ```sh
