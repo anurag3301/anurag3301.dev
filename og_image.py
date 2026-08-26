@@ -27,8 +27,12 @@ MUTED = (150, 158, 170)
 MAX_TITLE_FONT = 64
 MIN_TITLE_FONT = 34
 MARGIN_X = 90
-CONTENT_TOP = 220
+CONTENT_TOP = 170
 CONTENT_BOTTOM = 520
+
+# Bump this whenever generate()'s drawing logic changes, so previously
+# cached PNGs (keyed below) don't keep getting served after a code update.
+TEMPLATE_VERSION = 2
 
 
 def _wrap_to_fit(draw, text, font, max_width):
@@ -70,7 +74,9 @@ def generate(title: str, site_label: str = "anurag3301", section_label: str = "b
     title = (title or "").strip() or "Untitled post"
 
     os.makedirs(CACHE_DIR, exist_ok=True)
-    cache_key = hashlib.sha256(f"{title}|{site_label}|{section_label}".encode()).hexdigest()
+    cache_key = hashlib.sha256(
+        f"v{TEMPLATE_VERSION}|{title}|{site_label}|{section_label}".encode()
+    ).hexdigest()
     cache_path = os.path.join(CACHE_DIR, f"{cache_key}.png")
     if os.path.isfile(cache_path):
         with open(cache_path, "rb") as f:
@@ -91,9 +97,9 @@ def generate(title: str, site_label: str = "anurag3301", section_label: str = "b
     logo_w = draw.textlength(site_label, font=logo_font)
     draw.text((logo_x + logo_w, logo_y), f"/{section_label}", font=label_font, fill=MUTED)
 
-    # Prompt-style marker above the title, terminal aesthetic
-    prompt_font = ImageFont.truetype(FONT_REGULAR, 28)
-    draw.text((MARGIN_X, 150), "$ cat post_title", font=prompt_font, fill=MUTED)
+    # Small caret marker above the title, terminal aesthetic
+    caret_font = ImageFont.truetype(FONT_BOLD, 30)
+    draw.text((MARGIN_X, 140), ">", font=caret_font, fill=ACCENT)
 
     # Title, auto-sized + wrapped to fit
     max_width = WIDTH - (MARGIN_X * 2)
