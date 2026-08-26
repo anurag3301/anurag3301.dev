@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request, render_template_string
+from flask import Flask, jsonify, send_from_directory, abort, redirect, url_for, send_file, render_template, abort, request, render_template_string, Response
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
@@ -9,6 +9,7 @@ import hashlib
 import sqlite3
 import string
 import random
+import og_image
 load_dotenv()
 UPLOAD_KEY = os.getenv("UPLOAD_KEY")
 
@@ -60,6 +61,15 @@ def get_resume():
         return send_file(pdf_path, mimetype='application/pdf')
     except FileNotFoundError:
         abort(404, description="Resume not found")
+
+
+@app.route('/blog/og-image.png')
+def blog_og_image():
+    title = request.args.get('title', '')
+    png_bytes = og_image.generate(title)
+    resp = Response(png_bytes, mimetype='image/png')
+    resp.headers['Cache-Control'] = 'public, max-age=86400'
+    return resp
 
 
 @app.route('/blog/', defaults={'path': 'index.html'})

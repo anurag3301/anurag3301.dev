@@ -44,24 +44,22 @@
     {%- set title = title_macros::title(page_title=page.title, main_title=config.title) %}
     {%- set description = page.description %}
     {%- set type = "article" %}
+    {%- set banner_title = page.title %}
     {%- if page.extra and page.extra.og_image %}
         {%- if page.colocated_path %}
-            {%- set og_image = page.path ~ page.extra.og_image %}
+            {%- set og_image_url = get_url(path=page.path ~ page.extra.og_image) %}
         {%- else %}
-            {%- set og_image = page.extra.og_image %}
+            {%- set og_image_url = get_url(path=page.extra.og_image) %}
         {% endif %}
-    {%- elif config.extra.default_og_image %}
-        {%- set og_image = config.extra.default_og_image %}
     {%- endif %}
 {%- elif section %}
     {%- set permalink = section.permalink %}
     {%- set title = title_macros::title(page_title=section.title, main_title=config.title) %}
     {%- set description = section.description | default(value=config.description) %}
     {%- set type = "website" %}
+    {%- set banner_title = section.title | default(value=config.title) %}
     {%- if section.extra and section.extra.og_image %}
-        {%- set og_image = section.extra.og_image %}
-    {%- elif config.extra.default_og_image %}
-        {%- set og_image = config.extra.default_og_image %}
+        {%- set og_image_url = get_url(path=section.extra.og_image) %}
     {%- endif %}
 {%- else %}
     {# For 404 and taxonomy pages #}
@@ -70,31 +68,36 @@
             {%- set permalink = term.permalink %}
             {%- set title = title_macros::title(page_title=term.name, main_title=config.title) %}
             {%- set description = "All posts tagged " ~ term.name %}
+            {%- set banner_title = "Tag: " ~ term.name %}
         {% else %}
             {%- set permalink = config.base_url ~ "/" ~ taxonomy.slug %}
             {%- set title = title_macros::title(page_title=taxonomy.name, main_title=config.title) %}
             {%- set description = "All " ~ taxonomy.name %}
+            {%- set banner_title = taxonomy.name %}
         {% endif %}
     {%- else %}
         {%- set permalink = config.base_url %}
         {%- set title = title_macros::title(page_title="404", main_title=config.title) %}
         {%- set description = "Page not found" %}
+        {%- set banner_title = "404 - page not found" %}
     {%- endif %}
     {%- set type = "website" %}
-    {%- if config.extra.default_og_image %}
-        {%- set og_image = config.extra.default_og_image %}
-    {%- endif %}
 {%- endif -%}{# #}
+    {# Fall back to a dynamically-generated banner with the title baked in #}
+    {%- if not og_image_url %}
+        {%- set encoded_banner_title = banner_title | urlencode %}
+        {%- set og_image_url = config.base_url ~ "/og-image.png?title=" ~ encoded_banner_title %}
+    {%- endif %}
     <meta name="description" content="{{ description | safe }}">
 
     <meta property="og:description" content="{{ description | safe }}">
     <meta property="og:title" content="{{ title | safe }}">
     <meta property="og:type" content="{{ type }}">
     <meta property="og:url" content="{{ permalink | safe }}">
-{% if og_image %}
-    <meta property="og:image" content="{{ get_url(path=og_image) }}">
-    <meta name="twitter:image" content="{{ get_url(path=og_image) }}">
-{% endif %}
+    <meta property="og:image" content="{{ og_image_url | safe }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="{{ og_image_url | safe }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:description" content="{{ description | safe }}">
     <meta name="twitter:title" content="{{ title | safe }}">
